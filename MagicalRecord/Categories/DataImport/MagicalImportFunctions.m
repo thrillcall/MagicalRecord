@@ -27,7 +27,7 @@ NSDate * MR_adjustDateForDST(NSDate *date)
 {
     NSTimeInterval dstOffset = [[NSTimeZone localTimeZone] daylightSavingTimeOffsetForDate:date];
     NSDate *actualDate = [date dateByAddingTimeInterval:dstOffset];
-    
+
     return actualDate;
 }
 
@@ -35,11 +35,11 @@ NSDate * MR_dateFromString(NSString *value, NSString *format)
 {
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     [formatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
-    [formatter setLocale:[NSLocale currentLocale]];
+    [formatter setLocale:[NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"]];
     [formatter setDateFormat:format];
-    
+
     NSDate *parsedDate = [formatter dateFromString:value];
-    
+
     return parsedDate;
 }
 
@@ -61,19 +61,19 @@ NSInteger* MR_newColorComponentsFromString(NSString *serializedColor)
     NSScanner *colorScanner = [NSScanner scannerWithString:serializedColor];
     NSString *colorType;
     [colorScanner scanUpToString:@"(" intoString:&colorType];
-    
+
     NSInteger *componentValues = malloc(4 * sizeof(NSInteger));
     if (componentValues == NULL)
     {
         return NULL;
     }
-  
+
     if ([colorType hasPrefix:@"rgba"])
     {
         NSCharacterSet *rgbaCharacterSet = [NSCharacterSet characterSetWithCharactersInString:@"(,)"];
-        
+
         NSInteger *componentValue = componentValues;
-        while (![colorScanner isAtEnd]) 
+        while (![colorScanner isAtEnd])
         {
             [colorScanner scanCharactersFromSet:rgbaCharacterSet intoString:nil];
             [colorScanner scanInteger:componentValue];
@@ -93,12 +93,12 @@ UIColor * MR_colorFromString(NSString *serializedColor)
     {
         return nil;
     }
-    
+
     UIColor *color = [UIColor colorWithRed:(componentValues[0] / 255.0f)
                                      green:(componentValues[1] / 255.0f)
                                       blue:(componentValues[2] / 255.0f)
                                      alpha:componentValues[3]];
-    
+
     free(componentValues);
     return color;
 }
@@ -112,7 +112,7 @@ NSColor * MR_colorFromString(NSString *serializedColor)
     {
         return nil;
     }
-  
+
     NSColor *color = [NSColor colorWithDeviceRed:(componentValues[0] / 255.0f)
                                            green:(componentValues[1] / 255.0f)
                                             blue:(componentValues[2] / 255.0f)
